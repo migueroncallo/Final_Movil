@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Final_Movil</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="spinner_user">Escoja el tipo de usuario</string>
+
+    <string-array name="user_types">
+        <item>Coordinador</item>
+        <item>Profesor</item>
+        <item>Estudiante</item>
+    </string-array>
+    <string name="title_activity_sign_up">Sign_up</string>
+    <string name="title_activity_inicio">Inicio</string>
+    <string name="title_activity_ver_cursos">ver_cursos</string>
+    <string name="title_activity_crear_curso">crear_curso</string>
+</resources>
