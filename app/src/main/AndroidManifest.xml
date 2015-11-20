@@ -32,6 +32,10 @@
             android:name=".ver_cursos"
             android:label="@string/title_activity_ver_cursos" >
         </activity>
+        <activity
+            android:name=".entrar_curso"
+            android:label="@string/title_activity_entrar_curso" >
+        </activity>
     </application>
 
 </manifest>

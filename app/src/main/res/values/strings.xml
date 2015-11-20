@@ -14,4 +14,5 @@
     <string name="title_activity_inicio">Inicio</string>
     <string name="title_activity_ver_cursos">ver_cursos</string>
     <string name="title_activity_crear_curso">crear_curso</string>
+    <string name="title_activity_entrar_curso">entrar_curso</string>
 </resources>
