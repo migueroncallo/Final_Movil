@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,20 +35,25 @@ public class Inicio extends AppCompatActivity {
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String USER = "userKey";
     public static final String TYPE = "typeKey";
+    public static final String INTENCION = "intencionKey";
+    final Context context=this;
     int typeuser;
     String username,database,nombrecurso,idcurso;
     TextView welcome,nombreview,apellidoview, userview;
     Button verCurso, cerrarSesion,crearCurso;
     ArrayList values;
-    boolean ready;
+    boolean create;
     ProgressDialog pDialog;
     ImageView imageView;
+    List<ParseObject> ob;
+    int intencion;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
-        ready=false;
+        create=false;
         settings=getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         typeuser=settings.getInt(TYPE, 0);
         username=settings.getString(USER,"");
@@ -116,29 +122,37 @@ public class Inicio extends AppCompatActivity {
                     }
                 });
 
+
+
                 crearCurso.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        final EditText className = new EditText(Inicio.this);
-                        final EditText classId = new EditText(Inicio.this);
-                        AlertDialog.Builder builder =new AlertDialog.Builder(Inicio.this);
-                        builder.setTitle("Crear Curso");
-                        builder.setMessage("Nombre del Curso");
-                        builder.setView(className);
-                        builder.setMessage("Id del curso");
-                        builder.setView(classId);
-                        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                nombrecurso = className.getText().toString();
-                                idcurso = classId.getText().toString();
-                                new SenData().execute();
+                        LayoutInflater li = LayoutInflater.from(context);
+                        View promptsView = li.inflate(R.layout.curso_prompt, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Inicio.this);
+                        alertDialogBuilder.setView(promptsView);
+
+                        final EditText userInput = (EditText) promptsView.findViewById(R.id.editTextDialogUserInput);
+                        final EditText userInput2 = (EditText) promptsView.findViewById(R.id.editTextDialogUserInput2);
+
+                        alertDialogBuilder.setCancelable(false)
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        nombrecurso=userInput.getText().toString();
+                                        idcurso = userInput2.getText().toString();
+                                        new CheckData().execute();
+
+                                    }
+                                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
                             }
                         });
-                        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                            }
-                        });
-                        builder.show();
+
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
                     }
                 });
 
@@ -160,8 +174,24 @@ public class Inicio extends AppCompatActivity {
                 verCurso.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent= new Intent(Inicio.this, ver_cursos.class);
+                        Intent intent = new Intent(Inicio.this, ver_cursos.class);
+                        intencion=1;
+                        SharedPreferences.Editor editor= settings.edit();
+                        editor.putInt(INTENCION,intencion);
+                        editor.commit();
                         startActivity(intent);
+                    }
+                });
+                crearCurso.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        intencion = 2;
+                        SharedPreferences.Editor editor= settings.edit();
+                        editor.putInt(INTENCION,intencion);
+                        editor.commit();
+                        Intent intent = new Intent(Inicio.this, ver_cursos.class);
+                        startActivity(intent);
+
                     }
                 });
 
@@ -223,6 +253,58 @@ public class Inicio extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
 
+        }
+    }
+
+    private class CheckData extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(Inicio.this);
+            pDialog.setTitle("Creando curso");
+            pDialog.setMessage("Espere...");
+            pDialog.setIndeterminate(false);
+            pDialog.show();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            values = new ArrayList<String>();
+            try {
+                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("curso");
+                ob = query.find();
+                for (ParseObject dato : ob) {
+                    values.add(dato.get("name")+" "+dato.get("id_curso"));
+                }
+            } catch (com.parse.ParseException e) {
+                e.printStackTrace();
+            }
+
+            if(values.contains(nombrecurso+" "+idcurso)){
+                create=false;
+            }
+            else{
+                create=true;
+            }
+            pDialog.dismiss();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            if(create){
+                new SenData().execute();
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
+                builder.setTitle("Error");
+                builder.setMessage("La clase con ese id ya existe");
+                builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+                builder.show();
+            }
         }
     }
 

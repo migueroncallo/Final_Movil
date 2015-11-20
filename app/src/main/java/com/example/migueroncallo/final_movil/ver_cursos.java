@@ -8,12 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.migueroncallo.final_movil.ViewAdapter.RecyclerClickListner;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
@@ -22,10 +22,10 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ver_cursos extends AppCompatActivity implements ViewAdapter.RecyclerClickListner{
+public class ver_cursos extends AppCompatActivity implements ViewAdapter.RecyclerClickListner {
 
     private ViewAdapter viewAdapter;
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
     List <ParseObject> ob;
     ArrayList values;
     List<Information>data;
@@ -35,20 +35,35 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String USER = "userKey";
     public static final String TYPE = "typeKey";
+    public static final String INTENCION = "intencionKey";
+
+    int intencion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_cursos);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycle);
-        sharedPreferences= getSharedPreferences(MyPREFERENCES,MODE_PRIVATE);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycle);
+        sharedPreferences= getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         usertype=sharedPreferences.getInt(TYPE, 0);
-        username=sharedPreferences.getString(USER,"");
+        username=sharedPreferences.getString(USER, "");
+        intencion=sharedPreferences.getInt(INTENCION,0);
 
         data=new ArrayList<>();
 
         new GetData().execute();
+
+        viewAdapter= new ViewAdapter(this,data);
+        viewAdapter.setRecyclerClickListner(this);
+        mRecyclerView.setAdapter(viewAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+
+
+
+
 
     }
 
@@ -77,9 +92,11 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
     @Override
     public void itemClick(View view, int position) {
 
-        Toast toast= Toast.makeText(this,"Esta es la opcion"+position,Toast.LENGTH_SHORT);
-        toast.show();
+        String titulo;
+        titulo=values.get(position).toString();
+        Toast.makeText(ver_cursos.this, titulo, Toast.LENGTH_SHORT).show();
     }
+
 
     private class GetData extends AsyncTask<Void, Void, Void> {
         @Override
@@ -105,19 +122,28 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
                         }
 
 
+
                     }
                     switch (usertype) {
                         case 1:
-                        values.add("Curso: " + dato.get("name") + "   \nProfesor: " + dato.get("id_profesor"));
+                        values.add("Curso: " + dato.get("name") + "\nId: "+dato.get("id_curso")+"\nProfesor: " + dato.get("id_profesor"));
                             break;
                         case 2:
                             if(dato.get("id_profesor").equals(username)){
-                                values.add("Curso: " + dato.get("name") + "   \nProfesor: " + dato.get("id_profesor"));
+                                values.add("Curso: " + dato.get("name") + "\nId: "+dato.get("id_curso")+"\nProfesor: " + dato.get("id_profesor"));
                             }
                             break;
                         case 3:
-                            if(list.contains(username)){
-                                values.add("Curso: " + dato.get("name") + "   \nProfesor: " + dato.get("id_profesor"));
+                            switch (intencion) {
+                                case 1:
+                                if (list.contains(username)) {
+                                    values.add("Curso: " + dato.get("name") + "\nId: "+dato.get("id_curso")+"\nProfesor: " + dato.get("id_profesor"));
+                                }
+                                break;
+                                case 2:
+                                    if(dato.getBoolean("available")){
+                                        values.add("Curso: " + dato.get("name") + "\nId: "+dato.get("id_curso")+"\nProfesor: " + dato.get("id_profesor"));
+                                    }
                             }
                             break;
                     }
@@ -139,10 +165,9 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
                 data.add(info);
             }
 
-            viewAdapter=new ViewAdapter(ver_cursos.this, data);
-            viewAdapter.setRecyclerClickListner(ver_cursos.this);
-            recyclerView.setAdapter(viewAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(ver_cursos.this));
+            viewAdapter.notifyDataSetChanged();
+
+
 
         }
     }
