@@ -92,8 +92,16 @@ public class Inicio extends AppCompatActivity {
                 verCurso.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(Inicio.this,ver_cursos.class);
+                        Intent intent = new Intent(Inicio.this, ver_cursos.class);
                         startActivity(intent);
+                    }
+                });
+                cerrarSesion.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Inicio.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
                     }
                 });
                 break;
@@ -156,6 +164,15 @@ public class Inicio extends AppCompatActivity {
                     }
                 });
 
+                cerrarSesion.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Inicio.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+
                 break;
 
             case 3:
@@ -175,9 +192,9 @@ public class Inicio extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(Inicio.this, ver_cursos.class);
-                        intencion=1;
-                        SharedPreferences.Editor editor= settings.edit();
-                        editor.putInt(INTENCION,intencion);
+                        intencion = 1;
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putInt(INTENCION, intencion);
                         editor.commit();
                         startActivity(intent);
                     }
@@ -192,6 +209,15 @@ public class Inicio extends AppCompatActivity {
                         Intent intent = new Intent(Inicio.this, ver_cursos.class);
                         startActivity(intent);
 
+                    }
+                });
+
+                cerrarSesion.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Inicio.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
                     }
                 });
 

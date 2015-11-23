@@ -156,12 +156,7 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
                 ob = query.find();
                 for (ParseObject dato : ob) {
                     ArrayList<String> list = new ArrayList<String>();
-                    if(dato.getJSONArray("student_id")!=null){
-                        int len = dato.getJSONArray("student_id").length();
-                        for (int i=0;i<len;i++){
-                            list.add(dato.getJSONArray("student_id").getString(i));
-                        }
-                    }
+
                     switch (usertype) {
                         case 1:
                             values.add("Curso: " + dato.get("name") + "\nId: "+dato.get("id_curso")+"\nProfesor: " + dato.get("id_profesor"));
@@ -178,11 +173,19 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
                         case 3:
                             switch (intencion) {
                                 case 1:
-                                if (list.contains(username)) {
-                                    values.add("Curso: " + dato.get("name") + "\nId: "+dato.get("id_curso")+"\nProfesor: " + dato.get("id_profesor"));
-                                    nombrecursos.add(dato.get("name"));
-                                    idcursos.add(dato.get("id_curso"));
-                                }
+                                    if(dato.getJSONArray("student_id")!=null){
+                                        int len = dato.getJSONArray("student_id").length();
+                                        for (int i=0;i<len;i++) {
+                                            if (dato.getJSONArray("student_id").getString(i).contains(username)) {
+                                                values.add("Curso: " + dato.get("name") + "\nId: "+dato.get("id_curso")+"\nProfesor: " + dato.get("id_profesor"));
+                                                nombrecursos.add(dato.get("name"));
+                                                idcursos.add(dato.get("id_curso"));
+
+                                            }
+                                        }
+                                    }
+
+
                                 break;
                                 case 2:
                                     if(dato.getBoolean("available")){

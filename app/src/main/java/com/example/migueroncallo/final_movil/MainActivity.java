@@ -149,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
                 // Close the progressdialog
                 pDialog.dismiss();
             }else{
+                pDialog.dismiss();
+                Toast.makeText(MainActivity.this, "El usuario o contraseña es incorrecto", Toast.LENGTH_SHORT).show();
 
 
             }

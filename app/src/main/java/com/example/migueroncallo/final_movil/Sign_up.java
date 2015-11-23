@@ -150,7 +150,7 @@ public class Sign_up extends AppCompatActivity {
         protected Void doInBackground(Void... arg0){
             ParseObject test=new ParseObject("student");
             test.put("username",code);
-            test.put("nombre",name);
+            test.put("name",name);
             test.put("apellido", lastname);
             test.put("password",password);
             test.put("type",type);
