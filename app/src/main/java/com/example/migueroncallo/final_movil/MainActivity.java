@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -24,29 +27,44 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     Spinner spinner1;
-    EditText usernametext, passwordtext;
-    Button login, signup;
-    String usertype,user,password;
+    Button signup;
+    String usertype, user, password;
     int typeuser;
-    List <ParseObject> ob;
+    List<ParseObject> ob;
     String database;
     ProgressDialog pDialog;
     boolean logged;
     ArrayList values;
-    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String MyPREFERENCES = "MyPrefs";
     public static final String USER = "userKey";
     public static final String TYPE = "typeKey";
     SharedPreferences settings;
+
+    private RelativeLayout mRoot;
+    private TextInputLayout mEmailLayout;
+    private TextInputLayout mPasswordLayout;
+    private EditText mInputEmail;
+    private EditText mInputPassword;
+
+    private View.OnClickListener mSnackBarClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        spinner1= (Spinner)findViewById(R.id.spinner);
-        usernametext = (EditText) findViewById(R.id.username);
-        passwordtext = (EditText) findViewById(R.id.password);
-        login = (Button) findViewById(R.id.login_button);
+        spinner1 = (Spinner) findViewById(R.id.spinner);
+        spinner1.setSelection(2);
         signup = (Button) findViewById(R.id.signup_button);
+        mRoot = (RelativeLayout) findViewById(R.id.mainActivity);
+        mEmailLayout = (TextInputLayout) findViewById(R.id.email_layout);
+        mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
+        mInputEmail = (EditText) findViewById(R.id.input_email);
+        mInputPassword = (EditText) findViewById(R.id.input_password);
 
         settings = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
@@ -54,22 +72,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 usertype = spinner1.getItemAtPosition(position).toString();
-                Toast.makeText(MainActivity.this, usertype, Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, usertype, Toast.LENGTH_LONG).show();
 
-                if (usertype.contentEquals("Estudiante")){
+                if (usertype.contentEquals("Estudiante")) {
                     signup.setVisibility(View.VISIBLE);
-                    typeuser=3;
-                    database="student";
-                }else{
+                    typeuser = 3;
+                    database = "student";
+                } else {
                     signup.setVisibility(View.INVISIBLE);
-                    if (usertype.contentEquals("Coordinador")){
-                        typeuser=1;
-                    }else{
-                        typeuser=2;
+                    if (usertype.contentEquals("Coordinador")) {
+                        typeuser = 1;
+                    } else {
+                        typeuser = 2;
                     }
-                    database="high_user";
+                    database = "high_user";
                 }
-
             }
 
             @Override
@@ -79,16 +96,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                user = usernametext.getText().toString();
-                password = passwordtext.getText().toString();
-                new GetData().execute();
-            }
-        });
-
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,10 +103,52 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-
     }
+
+
+    public void submit(View view) {
+
+        boolean isEmptyEmail = isEmptyEmail();
+        boolean isEmptyPassword = isEmptyPassword();
+        if (isEmptyEmail && isEmptyPassword) {
+            Snackbar.make(mRoot, "Uno o mas campos estan vacios", Snackbar.LENGTH_SHORT)
+                    .setAction("Forget", mSnackBarClickListener)
+                    .show();
+        } else if (isEmptyEmail && !isEmptyPassword) {
+            mEmailLayout.setError("Usuario no puede estar vacio");
+            mPasswordLayout.setError(null);
+        } else if (!isEmptyEmail && isEmptyPassword) {
+            mPasswordLayout.setError("Password no puede estar vacio");
+            mEmailLayout.setError(null);
+        } else {
+            //All Good Here
+            user = mInputEmail.getText().toString();
+            password = mInputPassword.getText().toString();
+            new GetData().execute();
+        }
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mInputEmail.requestFocus();
+        mInputEmail.getText().clear();
+        mInputPassword.getText().clear();
+    }
+
+    private boolean isEmptyEmail() {
+        return mInputEmail.getText() == null
+                || mInputEmail.getText().toString() == null
+                || mInputEmail.getText().toString().isEmpty();
+    }
+
+    private boolean isEmptyPassword() {
+        return mInputPassword.getText() == null
+                || mInputPassword.getText().toString() == null
+                || mInputPassword.getText().toString().isEmpty();
+    }
+
     private class GetData extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -118,14 +167,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             // Create the array
-
             values = new ArrayList<String>();
-
             try {
                 ParseQuery<ParseObject> query = new ParseQuery<>(database);
                 ob = query.find();
                 for (ParseObject dato : ob) {
-                    values.add(dato.get("username")+""+dato.get("password"));
+                    values.add(dato.get("username") + "" + dato.get("password"));
                 }
             } catch (com.parse.ParseException e) {
                 e.printStackTrace();
@@ -137,46 +184,20 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             // Locate the listview in listview_main.xml
             // Pass the results into ListViewAdapter.java
-            if (values.contains(user+password)) {
-
-                SharedPreferences.Editor editor= settings.edit();
+            if (values.contains(user + password)) {
+                SharedPreferences.Editor editor = settings.edit();
                 editor.putString(USER, user);
-                editor.putInt(TYPE,typeuser);
+                editor.putInt(TYPE, typeuser);
                 editor.commit();
 
-                Intent intent = new Intent(MainActivity.this,Inicio.class);
+                Intent intent = new Intent(MainActivity.this, Inicio.class);
                 startActivity(intent);
                 // Close the progressdialog
                 pDialog.dismiss();
-            }else{
+            } else {
                 pDialog.dismiss();
                 Toast.makeText(MainActivity.this, "El usuario o contraseña es incorrecto", Toast.LENGTH_SHORT).show();
-
-
             }
         }
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 }
