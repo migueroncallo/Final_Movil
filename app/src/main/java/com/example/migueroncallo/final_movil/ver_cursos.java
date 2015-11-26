@@ -125,7 +125,7 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
                 });
                 builder.show();
             }else{
-                Intent intent = new Intent(ver_cursos.this,entrar_curso.class);
+                Intent intent = new Intent(ver_cursos.this,perfil_estud.class);
                 startActivity(intent);
             }
         }else{
