@@ -36,6 +36,7 @@ public class entrar_curso extends AppCompatActivity implements ViewAdapter.Recyc
     public static final String INTENCION = "intencionKey";
     public static final String CURSO = "cursoKey";
     public static final String IDKEY = "idKey";
+    public static final String STUDIDKEY="studidkey";
     int usertype;
     String username,curso,idstring;
     List<ParseObject> ob;
@@ -43,10 +44,10 @@ public class entrar_curso extends AppCompatActivity implements ViewAdapter.Recyc
     private ViewAdapter viewAdapter;
     private RecyclerView mRecyclerView;
     List<Information>data;
-    ArrayList<String> estudiantes;
+    ArrayList<String> estudiantecod;
     TextView tvid,tvnombre,tvteacher;
     boolean enabledclass;
-    Button enable,corte;
+    Button enable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class entrar_curso extends AppCompatActivity implements ViewAdapter.Recyc
         mRecyclerView = (RecyclerView) findViewById(R.id.recycle2);
 
         data=new ArrayList<>();
+        estudiantecod=new ArrayList<>();
 
         new GetData().execute();
 
@@ -75,16 +77,13 @@ public class entrar_curso extends AppCompatActivity implements ViewAdapter.Recyc
         mRecyclerView.setAdapter(viewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         enable=(Button)findViewById(R.id.enableButtoncurso);
-        corte = (Button) findViewById(R.id.buttonAddCorte);
 
         switch (usertype){
             case 1:
                   enable.setVisibility(View.INVISIBLE);
-                    corte.setVisibility(View.INVISIBLE);
                     break;
             case 2:
                 enable.setVisibility(View.VISIBLE);
-                corte.setVisibility(View.VISIBLE);
                 enable.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -100,43 +99,9 @@ public class entrar_curso extends AppCompatActivity implements ViewAdapter.Recyc
                     }
                 });
 
-                corte.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(enabledclass){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(entrar_curso.this);
-                            builder.setTitle("Error");
-                            builder.setMessage("El curso debe estar deshabilitado para agregar un corte");
-                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                }
-                            });
-                            builder.show();
-                        }else{
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(entrar_curso.this);
-                            builder.setTitle("Agregar Corte");
-                            builder.setMessage("Seguro que desea agregar un corte?");
-                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    new CreateCorte().execute();
-                                }
-                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            });
-                            builder.show();
-                        }
-                    }
-                });
-
-
                 break;
             case 3:
                 enable.setVisibility(View.INVISIBLE);
-                corte.setVisibility(View.INVISIBLE);
                 break;
         }
 
@@ -192,6 +157,7 @@ public class entrar_curso extends AppCompatActivity implements ViewAdapter.Recyc
                             int len=dato.getJSONArray("student_id").length();
                             for(int i=0;i<len;i++){
                                 test.add(dato.getJSONArray("student_id").getString(i));
+                                estudiantecod.add(dato.getJSONArray("student_id").getString(i));
                             }
                         }
                     }
@@ -256,52 +222,18 @@ public class entrar_curso extends AppCompatActivity implements ViewAdapter.Recyc
         }
     }
 
-    private class CreateCorte extends AsyncTask<Void,Void,Void>{
-        protected Void doInBackground(Void... arg0){
 
-            ArrayList<String> test=new ArrayList<>();
-            try {
-                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("curso");
-                ob = query.find();
-                for (ParseObject dato : ob) {
-
-                    if (dato.get("name").equals(curso) && dato.get("id_curso").equals(idstring)) {
-                        if(dato.getJSONArray("student_id")!=null) {
-                            int len=dato.getJSONArray("student_id").length();
-                            for(int i=0;i<len;i++){
-                                test.add(dato.getJSONArray("student_id").getString(i));
-                            }
-                        }
-
-                    }
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            ParseObject corte=new ParseObject("rubrica");
-
-            for(int i=0; i<test.size();i++) {
-
-                corte.put("student_id", test.get(i).toString());
-                corte.put("class_id", curso+idstring);
-
-                corte.saveInBackground();
-
-
-            }
-
-            return null;
-        }
-    }
 
 
 
     @Override
     public void itemClick(View view, int position) {
 
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(STUDIDKEY, estudiantecod.get(position).toString());
+        editor.commit();
+        Intent intent = new Intent(entrar_curso.this, perfil_estud.class);
+        startActivity(intent);
         Toast.makeText(entrar_curso.this, values.get(position+2).toString(), Toast.LENGTH_SHORT).show();
 
     }
