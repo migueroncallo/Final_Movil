@@ -1,11 +1,13 @@
 package com.example.migueroncallo.final_movil;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
@@ -46,6 +50,8 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
     int intencion;
     String titulo, claseid;
     private String TAG = "VerCursosTest";
+    private Button buttonAdd;
+    SharedPreferences settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +63,7 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
         usertype = sharedPreferences.getInt(TYPE, 0);
         username = sharedPreferences.getString(USER, "");
         intencion = sharedPreferences.getInt(INTENCION, 0);
+        buttonAdd = (Button) findViewById(R.id.buttonAddClass);
 
         data = new ArrayList<>();
 
@@ -67,6 +74,59 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
         mRecyclerView.setAdapter(viewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        Log.d(TAG,"usertype "+usertype+" intencion "+intencion);
+
+        if (usertype != 3){
+            buttonAdd.setVisibility(View.GONE);
+
+        } else {
+            buttonAdd.setVisibility(View.VISIBLE);
+            if (intencion == 2) {
+                TextView titulo = (TextView) findViewById(R.id.textView17);
+                titulo.setText("Cursos Disponibles");
+                //buttonAdd.setVisibility(View.GONE);
+                buttonAdd.setText("OK");
+            } else {
+
+                TextView titulo = (TextView) findViewById(R.id.textView17);
+                titulo.setText("Cursos Matriculados");
+                buttonAdd.setText("+");
+                buttonAdd.setVisibility(View.VISIBLE);
+            }
+        }
+
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (intencion != 2)
+                    intencion = 2;
+                else
+                    intencion = 1;
+                settings=getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+                SharedPreferences.Editor editor= settings.edit();
+                editor.putInt(INTENCION,intencion);
+                editor.commit();
+                //Intent intent = getIntent();
+                //finish();
+                //startActivity(intent);
+                //recreate();
+                //Intent intent = new Intent(this, ver_cursos.class);
+                //startActivity(intent);
+
+                if (Build.VERSION.SDK_INT >= 11) {
+                    recreate();
+                } else {
+                    Intent intent = getIntent();
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    finish();
+                    overridePendingTransition(0, 0);
+
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+                }
+
+            }
+        });
 
     }
 

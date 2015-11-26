@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,11 +30,17 @@ public class Sign_up extends AppCompatActivity {
     ArrayList values;
     List<ParseObject> ob;
     int type;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        mToolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(mToolbar);
+
+
         codigo = (EditText) findViewById(R.id.student_code);
         nombre = (EditText) findViewById(R.id.student_name);
         apellido = (EditText) findViewById(R.id.student_lastname);

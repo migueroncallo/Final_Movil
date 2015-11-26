@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private TextInputLayout mPasswordLayout;
     private EditText mInputEmail;
     private EditText mInputPassword;
+    private Toolbar mToolbar;
+
 
     private View.OnClickListener mSnackBarClickListener = new View.OnClickListener() {
         @Override
@@ -57,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mToolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+
         spinner1 = (Spinner) findViewById(R.id.spinner);
         spinner1.setSelection(2);
         signup = (Button) findViewById(R.id.signup_button);

@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,12 +48,15 @@ public class Inicio extends AppCompatActivity {
     ImageView imageView;
     List<ParseObject> ob;
     int intencion;
+    Toolbar mToolbar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
+
+
         create=false;
         settings=getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         typeuser=settings.getInt(TYPE, 0);
@@ -178,6 +182,9 @@ public class Inicio extends AppCompatActivity {
             case 3:
                 child=getLayoutInflater().inflate(R.layout.student_inicio,null);
                 item.addView(child);
+                mToolbar = (Toolbar) findViewById(R.id.app_bar);
+                setSupportActionBar(mToolbar);
+
                 userview=(TextView)findViewById(R.id.textView14);
                 nombreview=(TextView)findViewById(R.id.textView15);
                 apellidoview=(TextView)findViewById(R.id.textView16);
