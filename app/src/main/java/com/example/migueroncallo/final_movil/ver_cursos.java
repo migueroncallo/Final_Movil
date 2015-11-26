@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
@@ -28,46 +29,43 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
 
     private ViewAdapter viewAdapter;
     private RecyclerView mRecyclerView;
-    List <ParseObject> ob;
-    ArrayList values,nombrecursos,idcursos;
-    List<Information>data;
+    List<ParseObject> ob;
+    ArrayList values, nombrecursos, idcursos;
+    List<Information> data;
     SharedPreferences sharedPreferences;
     int usertype;
     String username;
-    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String STUDIDKEY="studidkey";
+    public static final String MyPREFERENCES = "MyPrefs";
     public static final String USER = "userKey";
     public static final String TYPE = "typeKey";
     public static final String INTENCION = "intencionKey";
-    public static final String CURSO= "cursoKey";
-    public static final String IDKEY= "idKey";
+    public static final String CURSO = "cursoKey";
+    public static final String IDKEY = "idKey";
     boolean error;
     int intencion;
     String titulo, claseid;
+    private String TAG = "VerCursosTest";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_cursos);
-        error=false;
+        error = false;
         mRecyclerView = (RecyclerView) findViewById(R.id.recycle);
-        sharedPreferences= getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
-        usertype=sharedPreferences.getInt(TYPE, 0);
-        username=sharedPreferences.getString(USER, "");
-        intencion=sharedPreferences.getInt(INTENCION,0);
+        sharedPreferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        usertype = sharedPreferences.getInt(TYPE, 0);
+        username = sharedPreferences.getString(USER, "");
+        intencion = sharedPreferences.getInt(INTENCION, 0);
 
-        data=new ArrayList<>();
+        data = new ArrayList<>();
 
         new GetData().execute();
 
-        viewAdapter= new ViewAdapter(this,data);
+        viewAdapter = new ViewAdapter(this, data);
         viewAdapter.setRecyclerClickListner(this);
         mRecyclerView.setAdapter(viewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
-
-
-
 
 
     }
@@ -98,16 +96,17 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
     public void itemClick(View view, int position) {
 
 
-        titulo=nombrecursos.get(position).toString();
-        claseid=idcursos.get(position).toString();
+        titulo = nombrecursos.get(position).toString();
+        claseid = idcursos.get(position).toString();
 
-        SharedPreferences.Editor editor= sharedPreferences.edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(CURSO, titulo);
         editor.putString(IDKEY, claseid);
+        editor.putString(STUDIDKEY, username);
         editor.commit();
 
-        if(usertype==3) {
-            if (intencion==2) {
+        if (usertype == 3) {
+            if (intencion == 2) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Agregar");
                 builder.setMessage("Desea unirse a este curso?");
@@ -124,16 +123,20 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
                     }
                 });
                 builder.show();
-            }else{
-                Intent intent = new Intent(ver_cursos.this,perfil_estud.class);
+            } else {
+                //SharedPreferences.Editor editor = sharedPreferences.edit();
+                //editor.putString(STUDIDKEY, username);
+                //editor.commit();
+
+                Intent intent = new Intent(ver_cursos.this, perfil_estud.class);
                 startActivity(intent);
             }
-        }else{
+        } else {
             Intent intent = new Intent(ver_cursos.this, entrar_curso.class);
             startActivity(intent);
         }
 
-        Toast.makeText(ver_cursos.this, titulo+" "+claseid, Toast.LENGTH_SHORT).show();
+        Toast.makeText(ver_cursos.this, titulo + " " + claseid, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -159,13 +162,13 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
 
                     switch (usertype) {
                         case 1:
-                            values.add("Curso: " + dato.get("name") + "\nId: "+dato.get("id_curso")+"\nProfesor: " + dato.get("id_profesor"));
+                            values.add("Curso: " + dato.get("name") + "\nId: " + dato.get("id_curso") + "\nProfesor: " + dato.get("id_profesor"));
                             nombrecursos.add(dato.get("name"));
                             idcursos.add(dato.get("id_curso"));
                             break;
                         case 2:
-                            if(dato.get("id_profesor").equals(username)){
-                                values.add("Curso: " + dato.get("name") + "\nId: "+dato.get("id_curso")+"\nProfesor: " + dato.get("id_profesor"));
+                            if (dato.get("id_profesor").equals(username)) {
+                                values.add("Curso: " + dato.get("name") + "\nId: " + dato.get("id_curso") + "\nProfesor: " + dato.get("id_profesor"));
                                 nombrecursos.add(dato.get("name"));
                                 idcursos.add(dato.get("id_curso"));
                             }
@@ -173,11 +176,12 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
                         case 3:
                             switch (intencion) {
                                 case 1:
-                                    if(dato.getJSONArray("student_id")!=null){
+                                    if (dato.getJSONArray("student_id") != null) {
                                         int len = dato.getJSONArray("student_id").length();
-                                        for (int i=0;i<len;i++) {
+                                        Log.d(TAG, "Filtro por estudiante " + username);
+                                        for (int i = 0; i < len; i++) {
                                             if (dato.getJSONArray("student_id").getString(i).contains(username)) {
-                                                values.add("Curso: " + dato.get("name") + "\nId: "+dato.get("id_curso")+"\nProfesor: " + dato.get("id_profesor"));
+                                                values.add("Curso: " + dato.get("name") + "\nId: " + dato.get("id_curso") + "\nProfesor: " + dato.get("id_profesor"));
                                                 nombrecursos.add(dato.get("name"));
                                                 idcursos.add(dato.get("id_curso"));
 
@@ -186,10 +190,10 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
                                     }
 
 
-                                break;
+                                    break;
                                 case 2:
-                                    if(dato.getBoolean("available")){
-                                        values.add("Curso: " + dato.get("name") + "\nId: "+dato.get("id_curso")+"\nProfesor: " + dato.get("id_profesor"));
+                                    if (dato.getBoolean("available")) {
+                                        values.add("Curso: " + dato.get("name") + "\nId: " + dato.get("id_curso") + "\nProfesor: " + dato.get("id_profesor"));
                                         nombrecursos.add(dato.get("name"));
                                         idcursos.add(dato.get("id_curso"));
                                     }
@@ -210,14 +214,13 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
 
             data.clear();
 
-            for (int i=0; i<values.size();i++){
+            for (int i = 0; i < values.size(); i++) {
 
                 Information info = new Information(values.get(i).toString());
                 data.add(info);
             }
 
             viewAdapter.notifyDataSetChanged();
-
 
 
         }
@@ -234,32 +237,38 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
 
             values = new ArrayList<String>();
             ParseQuery<ParseObject> query;
-            query=ParseQuery.getQuery("curso");
+            query = ParseQuery.getQuery("curso");
             query.whereEqualTo("name", titulo);
             query.whereEqualTo("id_curso", claseid);
+            try {
+                ob = query.find();
 
-            for (ParseObject dato : ob) {
-                ArrayList<String> list = new ArrayList<String>();
-                if(dato.getJSONArray("student_id")!=null){
-                    int len = dato.getJSONArray("student_id").length();
-                    for (int i=0;i<len;i++){
-                        try {
-                            list.add(dato.getJSONArray("student_id").getString(i));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                Log.d(TAG, "dato l " + ob.size());
+                for (ParseObject dato : ob) {
+                    ArrayList<String> list = new ArrayList<String>();
+                    if (dato.getJSONArray("student_id") != null) {
+                        int len = dato.getJSONArray("student_id").length();
+                        for (int i = 0; i < len; i++) {
+                            try {
+                                list.add(dato.getJSONArray("student_id").getString(i));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
+
+                    if (list.contains(username)) {
+
+                        error = true;
+                    } else {
+                        dato.add("student_id", username);
+                        dato.saveInBackground();
+                        error = false;
+                    }
+
                 }
-
-                if(list.contains(username)) {
-
-                    error=true;
-                }else{
-                    dato.add("student_id",username);
-                    dato.saveInBackground();
-                    error=false;
-                }
-
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
 
             return null;
@@ -269,7 +278,7 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
         protected void onPostExecute(Void result) {
             // Locate the listview in listview_main.xml
             // Pass the results into ListViewAdapter.java
-            if(error){
+            if (error) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ver_cursos.this);
                 builder.setTitle("Error");
                 builder.setMessage("El estudiante ya hace parte de este curso");
@@ -278,7 +287,7 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
                     }
                 });
                 builder.show();
-            }else{
+            } else {
                 new GetData().execute();
             }
 
