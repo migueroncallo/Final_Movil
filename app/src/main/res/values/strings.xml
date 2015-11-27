@@ -10,10 +10,10 @@
         <item>Profesor</item>
         <item>Estudiante</item>
     </string-array>
-    <string name="title_activity_sign_up">Sign_up</string>
+    <string name="title_activity_sign_up">Rotaciones Clinicas</string>
     <string name="title_activity_inicio">Rotaciones Clinicas</string>
     <string name="title_activity_ver_cursos">Rotaciones Clinicas</string>
-    <string name="title_activity_crear_curso">crear_curso</string>
-    <string name="title_activity_entrar_curso">entrar_curso</string>
-    <string name="title_activity_perfil_estud">perfil_estud</string>
+    <string name="title_activity_crear_curso">Rotaciones Clinicas</string>
+    <string name="title_activity_entrar_curso">Rotaciones Clinicas</string>
+    <string name="title_activity_perfil_estud">Rotaciones Clinicas</string>
 </resources>

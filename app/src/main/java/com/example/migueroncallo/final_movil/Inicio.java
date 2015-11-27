@@ -41,7 +41,7 @@ public class Inicio extends AppCompatActivity {
     int typeuser;
     String username,database,nombrecurso,idcurso;
     TextView welcome,nombreview,apellidoview, userview;
-    Button verCurso, cerrarSesion,crearCurso;
+    Button verCurso, crearCurso;
     ArrayList values;
     boolean create;
     ProgressDialog pDialog;
@@ -72,6 +72,8 @@ public class Inicio extends AppCompatActivity {
         return true;
     }
 
+
+
     public void cargar(int i){
         RelativeLayout item = (RelativeLayout)findViewById(R.id.layoutbaby);
         item.removeAllViews();
@@ -86,7 +88,6 @@ public class Inicio extends AppCompatActivity {
                 nombreview=(TextView) findViewById(R.id.textView12);
                 apellidoview= (TextView) findViewById(R.id.textView13);
                 crearCurso=(Button)findViewById(R.id.buttonCrearCurso);
-                cerrarSesion=(Button) findViewById(R.id.buttonCerrarSesCoord);
                 verCurso=(Button)findViewById(R.id.buttonVerCursosHigh);
                 welcome.setText(welcome.getText().toString() + ", Coordinador");
                 database="high_user";
@@ -98,14 +99,6 @@ public class Inicio extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent intent = new Intent(Inicio.this, ver_cursos.class);
                         startActivity(intent);
-                    }
-                });
-                cerrarSesion.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(Inicio.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
                     }
                 });
                 break;
@@ -120,7 +113,6 @@ public class Inicio extends AppCompatActivity {
                 apellidoview= (TextView) findViewById(R.id.textView13);
                 welcome.setText(welcome.getText().toString() + ", Profesor");
                 crearCurso=(Button)findViewById(R.id.buttonCrearCurso);
-                cerrarSesion=(Button) findViewById(R.id.buttonCerrarSesCoord);
                 verCurso=(Button)findViewById(R.id.buttonVerCursosHigh);
                 database="high_user";
                 new GetData().execute();
@@ -168,15 +160,6 @@ public class Inicio extends AppCompatActivity {
                     }
                 });
 
-                cerrarSesion.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(Inicio.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-
                 break;
 
             case 3:
@@ -189,7 +172,6 @@ public class Inicio extends AppCompatActivity {
                 nombreview=(TextView)findViewById(R.id.textView15);
                 apellidoview=(TextView)findViewById(R.id.textView16);
                 imageView=(ImageView)findViewById(R.id.imageView);
-                cerrarSesion=(Button) findViewById(R.id.buttonCloseStud);
                 verCurso=(Button)findViewById(R.id.buttonVerClassSutd);
                 crearCurso=(Button)findViewById(R.id.buttonAddClass);
                 database="student";
@@ -219,30 +201,17 @@ public class Inicio extends AppCompatActivity {
                     }
                 });
 
-                cerrarSesion.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(Inicio.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-
             break;
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        Intent intent = new Intent(Inicio.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
 
         return super.onOptionsItemSelected(item);
     }

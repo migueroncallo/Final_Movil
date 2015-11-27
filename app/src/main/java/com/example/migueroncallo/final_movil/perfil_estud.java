@@ -2,6 +2,7 @@ package com.example.migueroncallo.final_movil;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,19 +39,24 @@ public class perfil_estud extends AppCompatActivity {
     String username, curso, idstring, idstud,cursoid;
     List<Information> data;
     int usertype;
-    TextView codstud, nomstud, lastnstud;
+    TextView codstud, nomstud;
     Button agregarcorte;
     private RecyclerView recyclerView;
     ArrayList values;
     List<ParseObject> ob;
     private ViewAdapter viewAdapter;
     Context context;
-    float conoc_base,conoc_clin,his_clin,rondas,orales,finalexamen;
+    float conoc_base,conoc_clin,his_clin,rondas,orales,finalexamen,total;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil_estud);
+
+        mToolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(mToolbar);
+
 
         sharedPreferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         curso = sharedPreferences.getString(CURSO, "");
@@ -58,7 +65,6 @@ public class perfil_estud extends AppCompatActivity {
         usertype= sharedPreferences.getInt(TYPE,0);
         codstud = (TextView) findViewById(R.id.codstudprof);
         nomstud = (TextView) findViewById(R.id.nomstudprof);
-        lastnstud = (TextView) findViewById(R.id.lastnamestudprof);
         agregarcorte = (Button) findViewById(R.id.addcortebutton);
         recyclerView = (RecyclerView) findViewById(R.id.recyclenotas);
         codstud.setText(codstud.getText().toString()+" "+idstud);
@@ -104,7 +110,7 @@ public class perfil_estud extends AppCompatActivity {
                                         rondas= Float.parseFloat(userInput4.getText().toString());
                                         orales= Float.parseFloat(userInput5.getText().toString());
                                         finalexamen = Float.parseFloat(userInput6.getText().toString());
-
+                                        total = conoc_base*0.1f+conoc_clin*0.15f+his_clin*0.15f+rondas*0.15f+orales*0.15f+finalexamen*0.15f;
                                         new SenData().execute();
                                         new GetData().execute();
 
@@ -133,22 +139,16 @@ public class perfil_estud extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_perfil_estud, menu);
+        getMenuInflater().inflate(R.menu.menu_inicio, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
         return super.onOptionsItemSelected(item);
     }
 
@@ -187,7 +187,7 @@ public class perfil_estud extends AppCompatActivity {
                     if(idstud.equals(dato.get("student_id"))&&cursoid.equals(dato.get("class_id"))){
                         values.add("Conocimientos basicos: "+dato.get("conoc_base").toString()+"\nConocimientos clinicos: "+dato.get("conoc_clin").toString()
                         +"\nHistoria clinica: "+dato.get("his_clin").toString()+"\nRondas Medicas: "+dato.get("rondas").toString()
-                        +"\nPreguntas Orales: "+dato.get("orales").toString()+"\nExamen Final: "+dato.get("final").toString());
+                        +"\nPreguntas Orales: "+dato.get("orales").toString()+"\nExamen Final: "+dato.get("final").toString()+"\nDefinitiva: "+dato.get("total").toString());
                     }
                 }
             } catch (ParseException e) {
@@ -203,8 +203,7 @@ public class perfil_estud extends AppCompatActivity {
             // Pass the results into ListViewAdapter.java
             data.clear();
 
-            nomstud.setText(nomstud.getText().toString() + " " + values.get(0).toString());
-            lastnstud.setText(lastnstud.getText().toString()+" "+values.get(1).toString());
+            nomstud.setText(nomstud.getText().toString() + " " + values.get(0).toString()+" "+values.get(1).toString());
 
             for (int i=2; i<values.size();i++){
 
@@ -227,6 +226,7 @@ public class perfil_estud extends AppCompatActivity {
             test.put("rondas", rondas);
             test.put("orales",orales);
             test.put("final", finalexamen);
+            test.put("total", total);
             test.saveInBackground();
 
             return null;

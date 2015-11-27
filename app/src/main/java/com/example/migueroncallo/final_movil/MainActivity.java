@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String USER = "userKey";
     public static final String TYPE = "typeKey";
+    public static final String INTENCION = "intencionKey";
     SharedPreferences settings;
 
     private RelativeLayout mRoot;
@@ -195,10 +196,16 @@ public class MainActivity extends AppCompatActivity {
             if (values.contains(user + password)) {
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString(USER, user);
+                editor.putInt(INTENCION, 1);
                 editor.putInt(TYPE, typeuser);
                 editor.commit();
 
-                Intent intent = new Intent(MainActivity.this, Inicio.class);
+
+
+                editor.commit();
+
+                //Intent intent = new Intent(MainActivity.this, Inicio.class);
+                Intent intent = new Intent(MainActivity.this, ver_cursos.class);
                 startActivity(intent);
                 // Close the progressdialog
                 pDialog.dismiss();
@@ -207,5 +214,10 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "El usuario o contraseña es incorrecto", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }
