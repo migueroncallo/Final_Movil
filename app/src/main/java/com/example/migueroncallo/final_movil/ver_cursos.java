@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -54,7 +55,7 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
     int intencion;
     String titulo, claseid;
     private String TAG = "VerCursosTest";
-    private Button buttonAdd;
+    private FloatingActionButton buttonAdd;
     SharedPreferences settings;
     private Toolbar mToolbar;
     ProgressDialog pDialog;
@@ -75,7 +76,7 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
         usertype = sharedPreferences.getInt(TYPE, 0);
         username = sharedPreferences.getString(USER, "");
         intencion = sharedPreferences.getInt(INTENCION, 0);
-        buttonAdd = (Button) findViewById(R.id.buttonAddClass);
+        buttonAdd = (FloatingActionButton) findViewById(R.id.buttonAddClass);
 
         data = new ArrayList<>();
 
@@ -95,18 +96,20 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
             TextView titulo = (TextView) findViewById(R.id.textView17);
             titulo.setText("Cursos Creados");
             buttonAdd.setVisibility(View.VISIBLE);
-            buttonAdd.setText("+");
+            buttonAdd.setImageResource(android.R.drawable.ic_input_add);
         } else {
             buttonAdd.setVisibility(View.VISIBLE);
             if (intencion == 2) {
                 TextView titulo = (TextView) findViewById(R.id.textView17);
                 titulo.setText("Cursos Disponibles");
                 //buttonAdd.setVisibility(View.GONE);
-                buttonAdd.setText("OK");
+                //buttonAdd.setText("OK");
+                buttonAdd.setImageResource(android.R.drawable.ic_menu_save);
             } else {
                 TextView titulo = (TextView) findViewById(R.id.textView17);
                 titulo.setText("Cursos Matriculados");
-                buttonAdd.setText("+");
+                //buttonAdd.setText("+");
+                buttonAdd.setImageResource(android.R.drawable.ic_input_add);
                 buttonAdd.setVisibility(View.VISIBLE);
             }
         }
