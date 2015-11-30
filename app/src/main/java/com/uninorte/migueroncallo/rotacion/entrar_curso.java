@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,11 +45,16 @@ public class entrar_curso extends AppCompatActivity implements ViewAdapter.Recyc
     TextView tvid,tvnombre,tvteacher;
     boolean enabledclass;
     Button enable;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entrar_curso);
+
+        mToolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
 
 
         sharedPreferences=getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
@@ -107,7 +113,7 @@ public class entrar_curso extends AppCompatActivity implements ViewAdapter.Recyc
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_entrar_curso, menu);
+        getMenuInflater().inflate(R.menu.menu_inicio, menu);
         return true;
     }
 

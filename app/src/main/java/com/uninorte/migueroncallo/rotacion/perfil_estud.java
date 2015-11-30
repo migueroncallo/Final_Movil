@@ -56,7 +56,7 @@ public class perfil_estud extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(mToolbar);
-
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
 
         sharedPreferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         curso = sharedPreferences.getString(CURSO, "");
