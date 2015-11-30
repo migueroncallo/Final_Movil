@@ -1,4 +1,4 @@
-package com.example.migueroncallo.final_movil;
+package com.uninorte.migueroncallo.rotacion;
 
 import android.app.Application;
 

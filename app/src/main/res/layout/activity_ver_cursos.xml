@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="com.example.migueroncallo.final_movil.ver_cursos">
+    tools:context="com.uninorte.migueroncallo.rotacion.ver_cursos">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/app_bar"

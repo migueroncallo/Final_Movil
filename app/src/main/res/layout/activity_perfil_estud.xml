@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    tools:context="com.example.migueroncallo.final_movil.perfil_estud">
+    tools:context="com.uninorte.migueroncallo.rotacion.perfil_estud">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/app_bar"

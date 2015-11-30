@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.migueroncallo.final_movil" >
+    package="com.uninorte.migueroncallo.rotacion" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -8,13 +8,13 @@
     <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
 
     <application
-        android:name=".parseInitializer"
+        android:name="com.uninorte.migueroncallo.rotacion.parseInitializer"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.uninorte.migueroncallo.rotacion.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,23 +23,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Sign_up"
+            android:name="com.uninorte.migueroncallo.rotacion.Sign_up"
             android:label="@string/title_activity_sign_up" >
         </activity>
         <activity
-            android:name=".Inicio"
+            android:name="com.uninorte.migueroncallo.rotacion.Inicio"
             android:label="@string/title_activity_inicio" >
         </activity>
         <activity
-            android:name=".ver_cursos"
+            android:name="com.uninorte.migueroncallo.rotacion.ver_cursos"
             android:label="@string/title_activity_ver_cursos" >
         </activity>
         <activity
-            android:name=".entrar_curso"
+            android:name="com.uninorte.migueroncallo.rotacion.entrar_curso"
             android:label="@string/title_activity_entrar_curso" >
         </activity>
         <activity
-            android:name=".perfil_estud"
+            android:name="com.uninorte.migueroncallo.rotacion.perfil_estud"
             android:label="@string/title_activity_perfil_estud" >
         </activity>
     </application>

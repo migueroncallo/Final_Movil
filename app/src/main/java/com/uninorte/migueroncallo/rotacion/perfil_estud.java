@@ -1,4 +1,4 @@
-package com.example.migueroncallo.final_movil;
+package com.uninorte.migueroncallo.rotacion;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -110,7 +110,7 @@ public class perfil_estud extends AppCompatActivity {
                                         rondas= Float.parseFloat(userInput4.getText().toString());
                                         orales= Float.parseFloat(userInput5.getText().toString());
                                         finalexamen = Float.parseFloat(userInput6.getText().toString());
-                                        total = conoc_base*0.1f+conoc_clin*0.15f+his_clin*0.15f+rondas*0.15f+orales*0.15f+finalexamen*0.15f;
+                                        total = conoc_base*0.1f+conoc_clin*0.15f+his_clin*0.15f+rondas*0.15f+orales*0.15f+finalexamen*0.30f;
                                         new SenData().execute();
                                         new GetData().execute();
 
