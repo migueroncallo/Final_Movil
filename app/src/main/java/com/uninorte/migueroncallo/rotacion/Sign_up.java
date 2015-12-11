@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Sign_up extends AppCompatActivity {
-    EditText codigo,nombre,apellido,clave,confirmar;
-    String code,name,lastname,password,conf_password;
+    EditText codigo, nombre, apellido, clave, confirmar;
+    String code, name, lastname, password, conf_password;
     Button registrar;
     Boolean check;
     ArrayList values;
@@ -35,7 +35,7 @@ public class Sign_up extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(mToolbar);
-
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
 
         codigo = (EditText) findViewById(R.id.student_code);
         nombre = (EditText) findViewById(R.id.student_name);
@@ -43,18 +43,11 @@ public class Sign_up extends AppCompatActivity {
         clave = (EditText) findViewById(R.id.student_password);
         confirmar = (EditText) findViewById(R.id.password_confirm);
         registrar = (Button) findViewById(R.id.confirm_button);
-        check=false;
-        type=3;
+        check = false;
+        type = 3;
 
         new GetData().execute();
-
-
-
-
-
-
     }
-
 
     private class GetData extends AsyncTask<Void, Void, Void> {
         @Override
@@ -87,20 +80,19 @@ public class Sign_up extends AppCompatActivity {
             // Locate the listview in listview_main.xml
             // Pass the results into ListViewAdapter.java
 
-
-                // Close the progressdialog
+            // Close the progressdialog
 
         }
     }
 
-    public void validate(View v){
-        code=codigo.getText().toString();
+    public void validate(View v) {
+        code = codigo.getText().toString();
         name = nombre.getText().toString();
         lastname = apellido.getText().toString();
-        password=clave.getText().toString();
-        conf_password=confirmar.getText().toString();
+        password = clave.getText().toString();
+        conf_password = confirmar.getText().toString();
 
-        if(code.isEmpty()||name.isEmpty()||lastname.isEmpty()||password.isEmpty()||conf_password.isEmpty()){
+        if (code.isEmpty() || name.isEmpty() || lastname.isEmpty() || password.isEmpty() || conf_password.isEmpty()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Error");
             builder.setMessage("Todos los campos son necesarios.");
@@ -110,8 +102,8 @@ public class Sign_up extends AppCompatActivity {
             });
             builder.show();
 
-        }else{
-            if(!password.equals(conf_password)){
+        } else {
+            if (!password.equals(conf_password)) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Error");
@@ -121,8 +113,8 @@ public class Sign_up extends AppCompatActivity {
                     }
                 });
                 builder.show();
-            }else{
-                if(values.contains(code)){
+            } else {
+                if (values.contains(code)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("Error");
                     builder.setMessage("El código de estudiante ya eixste.");
@@ -132,7 +124,7 @@ public class Sign_up extends AppCompatActivity {
                     });
                     builder.show();
 
-                }else{
+                } else {
                     new SenData().execute();
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("Operación exitosa.");
@@ -149,43 +141,16 @@ public class Sign_up extends AppCompatActivity {
 
     }
 
-    private class SenData extends AsyncTask<Void,Void,Void>{
-        protected Void doInBackground(Void... arg0){
-            ParseObject test=new ParseObject("student");
-            test.put("username",code);
-            test.put("name",name);
+    private class SenData extends AsyncTask<Void, Void, Void> {
+        protected Void doInBackground(Void... arg0) {
+            ParseObject test = new ParseObject("student");
+            test.put("username", code);
+            test.put("name", name);
             test.put("apellido", lastname);
-            test.put("password",password);
-            test.put("type",type);
+            test.put("password", password);
+            test.put("type", type);
             test.saveInBackground();
             return null;
         }
-    }
-
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_inicio, menu);
-        return true;
-    }
-
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

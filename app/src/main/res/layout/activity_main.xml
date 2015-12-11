@@ -68,7 +68,8 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/editText"
                 android:layout_marginTop="46dp"
-                android:hint="Password" />
+                android:hint="Password"
+                android:inputType="textPassword" />
 
         </android.support.design.widget.TextInputLayout>
 
