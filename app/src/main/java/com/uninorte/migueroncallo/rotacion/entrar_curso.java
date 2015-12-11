@@ -234,7 +234,8 @@ public class entrar_curso extends AppCompatActivity implements ViewAdapter.Recyc
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(STUDIDKEY, estudiantecod.get(position).toString());
         editor.commit();
-        Intent intent = new Intent(entrar_curso.this, perfil_estud.class);
+        //Intent intent = new Intent(entrar_curso.this, perfil_estud.class);
+        Intent intent = new Intent(entrar_curso.this, RubricasActivity.class);
         startActivity(intent);
         Toast.makeText(entrar_curso.this, values.get(position+2).toString(), Toast.LENGTH_SHORT).show();
 

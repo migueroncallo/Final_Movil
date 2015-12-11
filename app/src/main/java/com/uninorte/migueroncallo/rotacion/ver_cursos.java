@@ -225,7 +225,8 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
                 //editor.putString(STUDIDKEY, username);
                 //editor.commit();
 
-                Intent intent = new Intent(ver_cursos.this, perfil_estud.class);
+                //Intent intent = new Intent(ver_cursos.this, perfil_estud.class);
+                Intent intent = new Intent(ver_cursos.this, RubricasActivity.class);
                 startActivity(intent);
             }
         } else {
