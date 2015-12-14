@@ -65,7 +65,6 @@ public class RubricasActivity extends AppCompatActivity {
         agregarcorte = (Button) findViewById(R.id.addnotabutton);
         calculardefinitiva = (Button) findViewById(R.id.definitivabutton);
 
-
         mContext = this;
 
         sharedPreferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
@@ -173,7 +172,9 @@ public class RubricasActivity extends AppCompatActivity {
                 ob=query.find();
                 for (ParseObject dato:ob){
                     if(idstud.equals(dato.get("student_id"))&&cursoid.equals(dato.get("class_id"))){
-                        values.add("Type: "+dato.get("type").toString()+"\nNota: "+dato.get("nota").toString()
+                        Log.d(TAG,"idx "+dato.get("type").toString()+"   "+Integer.parseInt(dato.get("type").toString()));
+                        values.add(getResources().getStringArray(R.array.notas_arrays)[Integer.parseInt(dato.get("type").toString())]+
+                                        "\nNota: "+dato.get("nota").toString()
                                         +"\nFecha: "+dato.getCreatedAt().toString()
                                 );
                     }
@@ -213,7 +214,7 @@ public class RubricasActivity extends AppCompatActivity {
             ParseObject test=new ParseObject("rubricaind");
             test.put("class_id",cursoid);
             test.put("student_id", idstud);
-            test.put("type", tipo);
+            test.put("type",tipo);
             test.put("nota", nota);
             test.saveInBackground();
 

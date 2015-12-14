@@ -163,7 +163,6 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         finish();
                         overridePendingTransition(0, 0);
-
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                     }
@@ -234,7 +233,7 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
             startActivity(intent);
         }
 
-        Toast.makeText(ver_cursos.this, titulo + " " + claseid, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(ver_cursos.this, titulo + " " + claseid, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -477,5 +476,27 @@ public class ver_cursos extends AppCompatActivity implements ViewAdapter.Recycle
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
+
+        if (usertype == 3){
+            if (intencion == 2) {
+                intencion = 1;
+                settings = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putInt(INTENCION, intencion);
+                editor.commit();
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= 11) {
+            recreate();
+        } else {
+            Intent intent = getIntent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            finish();
+            overridePendingTransition(0, 0);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+        }
+
     }
 }

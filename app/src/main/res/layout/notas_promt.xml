@@ -25,13 +25,13 @@
             android:layout_width="0dp"
             android:entries="@array/notas_arrays"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="2" />
 
         <EditText
             android:id="@+id/editTextNota"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:inputType="numberDecimal" />
     </LinearLayout>
 
