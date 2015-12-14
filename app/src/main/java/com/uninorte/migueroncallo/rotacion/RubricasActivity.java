@@ -2,8 +2,10 @@ package com.uninorte.migueroncallo.rotacion;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -99,7 +101,6 @@ public class RubricasActivity extends AppCompatActivity {
                         final EditText userInput = (EditText) promptsView.findViewById(R.id.editTextNota);
                         final Spinner spinner = (Spinner) promptsView.findViewById(R.id.spinnerNota);
 
-
                         alertDialogBuilder.setCancelable(false)
                                 .setPositiveButton("Enviar", new DialogInterface.OnClickListener() {
                                     @Override
@@ -112,7 +113,7 @@ public class RubricasActivity extends AppCompatActivity {
                                         //finalexamen = Float.parseFloat(userInput6.getText().toString());
                                         //total = conoc_base*0.1f+conoc_clin*0.15f+his_clin*0.15f+rondas*0.15f+orales*0.15f+finalexamen*0.30f;
                                         nota = Float.parseFloat(userInput.getText().toString());
-                                        tipo =  spinner.getSelectedItemPosition();
+                                        tipo = spinner.getSelectedItemPosition();
                                         new SenData().execute();
                                         //new GetData().execute();
 
@@ -128,6 +129,14 @@ public class RubricasActivity extends AppCompatActivity {
                         alertDialog.show();
 
 
+                    }
+                });
+
+
+                calculardefinitiva.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new CalcularData().execute();
                     }
                 });
                 break;
@@ -209,8 +218,70 @@ public class RubricasActivity extends AppCompatActivity {
         }
     }
 
+    private class CalcularData extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            float conoc_base= 0f;
+            float conoc_clin= 0f;
+            float his_clin= 0f;
+            float rondas= 0f;
+            float orales= 0f;
+            float finalexamen = 0f;
+            nota = 0f;
+
+            try {
+                ParseQuery<ParseObject> query = new ParseQuery<>("rubricaind");
+                query.whereEqualTo("student_id", idstud);
+                query.whereEqualTo("class_id", cursoid);
+                ob=query.find();
+                Log.d(TAG,"student_id "+idstud+" class_id "+cursoid+" Numero de Notas "+ob.size());
+                for (ParseObject dato:ob){
+                    switch(Integer.parseInt(dato.get("type").toString())){
+                        case 0:
+                            conoc_base = conoc_base +  Float.parseFloat(dato.get("nota").toString());
+                            break;
+                        case 1:
+                            conoc_clin = conoc_clin +  Float.parseFloat(dato.get("nota").toString());
+                            break;
+                        case 2:
+                            his_clin = his_clin +  Float.parseFloat(dato.get("nota").toString());
+                            break;
+                        case 3:
+                            rondas = rondas +  Float.parseFloat(dato.get("nota").toString());
+                            break;
+                        case 4:
+                            orales = orales +  Float.parseFloat(dato.get("nota").toString());
+                            break;
+                        case 5:
+                            finalexamen = finalexamen +  Float.parseFloat(dato.get("nota").toString());
+                            break;
+                    }
+                }
+                nota = conoc_base*0.1f+conoc_clin*0.15f+his_clin*0.15f+rondas*0.15f+orales*0.15f+finalexamen*0.30f;
+                Log.d(TAG, "Definitiva total " + nota);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void result) {
+            tipo = 6;
+            new SenData().execute();
+        }
+    }
+
     private class SenData extends AsyncTask<Void,Void,Void>{
         protected Void doInBackground(Void... arg0){
+            Log.d(TAG,"Sending type "+tipo+" nota "+nota);
             ParseObject test=new ParseObject("rubricaind");
             test.put("class_id",cursoid);
             test.put("student_id", idstud);
@@ -223,7 +294,17 @@ public class RubricasActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            new GetNotasActuales().execute();
+            //new GetNotasActuales().execute();
+            if (Build.VERSION.SDK_INT >= 11) {
+                recreate();
+            } else {
+                Intent intent = getIntent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            }
         }
     }
 }
